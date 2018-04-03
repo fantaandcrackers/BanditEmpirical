@@ -107,22 +107,19 @@ class ProcessWebscope(object):
         """Processes a given Webscope file (in gzip format) into SQLite db."""
         counter = 0
         f = gzip.open(filename)
-        if not num_lines:
-            # read lines until done
-            processing = "all"
-            for line in f:
-                if counter >= skip_lines:
-                    self.parse_text(line)
-                else:
-                    counter += 1
-        else:
-            # read specified lines
+
+        # read lines until done
+        if num_lines:
             processing = '{0:d}'.format(num_lines)
-            for i in range(num_lines):
-                if counter >= skip_lines:
-                    self.parse_text(i)
-                else:
-                    counter += 1
+        else:
+            processing = "all"
+
+        for line in f:
+            if counter >= skip_lines:
+                self.parse_text(line)
+                counter += 1
+            else:
+                counter += 1
 
         print('Done processing file ({} lines).'.format(processing))
         f.close()
